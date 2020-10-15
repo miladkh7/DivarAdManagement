@@ -10,6 +10,14 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 namespace DivarAPI3
 {
+    enum State
+    {
+        WaitForAporve = 1,
+        InQue = 2,
+        Apprive = 3,
+        Other = 0,
+
+    }
     static class Program
     {
         /// <summary>
@@ -26,7 +34,15 @@ namespace DivarAPI3
 
     class DivarPost
     {
+
+        const string postStatusWaitForAprove = "منتظر تایید شماره";
+        const string postStatusInQueue = "در صف انتشار";
+        const string postStatusApprove = "منتشر شده";
+        const string postDeleted = "حذف شده";
+
+
         private string _title, _date, _token,_management_token;
+        private State _statusCode =State.Other;
         
         public string token
         {
@@ -35,76 +51,102 @@ namespace DivarAPI3
 
         public string managementToken
         {
-            get { return managementToken; }
+            get { return _management_token; }
         }
-        public DivarPost(string title, string token,string manageToken)
+
+        public State statusCode
+        {
+            get
+            {
+                return _statusCode;
+            }
+        }
+        public DivarPost(string title,string manageToken, string token,State status)
         {
             this._title = title;
             this._token = token;
             this._management_token = manageToken;
+            this._statusCode = status;
 
         }
         public override string ToString()
         {
-            return "_title ,_token".ToString();
+            return this._management_token;
+        }
+
+
+
+        public static State GetStatusCode(string postStatus)
+        {
+            if ( postStatus==postStatusWaitForAprove)  return State.WaitForAporve;
+            if (postStatus == postStatusInQueue)  return State.InQue;
+            if (postStatus == postStatusApprove) return State.Apprive;
+            else { return State.Other; }
+
+
+
         }
     }
 
     class Divar
     {
         public static WebClient client;
-        public static string accessToken;
+        public string accessToken;
 
-        List<DivarPost> Posts;
+        public List<DivarPost> Posts;
 
-        public Divar()
+
+
+        public Divar(string accessToken)
         {
             client = new WebClient();
+            this.accessToken = accessToken;
+
             client.Encoding = Encoding.UTF8;
             client.Headers[HttpRequestHeader.ContentType] = "application/json";
             client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; " +
                       "Windows NT 5.2; .NET CLR 1.0.3705;)");
-            //client.Headers[
+            client.Headers.Add("Authorization", "Bearer " + accessToken);
             Posts = new List<DivarPost>();
         }
 
 
         public void GetPosts()
         {
-            this.Posts = GetData();
+            this.Posts = GetData(this.accessToken);
         }
 
-
-        public static List<DivarPost> GetData()
-        {
-           return GetData(accessToken);
-
-        }
         public static List<DivarPost> GetData(string accessToken)
         {
             List<DivarPost> posts = new List<DivarPost>();
 
             string getPostUrl = "https://api.divar.ir/v8/ongoingposts/userposts";
-
-            client.Headers.Add("Authorization", "Bearer " + accessToken);
-
-            string result = client.DownloadString(getPostUrl);
-
-            JObject j = JObject.Parse(result);
-
-            foreach (var item in j["widget_list"])
+            try
             {
-                string newPostTitle = item["data"]["title"].ToString();
-                string newPostToken = item["data"]["manage_token"].ToString();
+                string result = client.DownloadString(getPostUrl);
+                JObject j = JObject.Parse(result);
 
-                DivarPost currentDivarPost = new DivarPost(newPostTitle, newPostToken,accessToken);
+                foreach (var item in j["widget_list"])
+                {
+                    string newPostTitle = item["data"]["title"].ToString();
+                    string newPostToken = item["data"]["manage_token"].ToString();
+                    string persianTempStatus = item["data"]["status"].ToString();
+                    State newPostStatus = DivarPost.GetStatusCode(persianTempStatus);
+                    DivarPost currentDivarPost = new DivarPost(newPostTitle, newPostToken, accessToken, newPostStatus);
+             
+                    posts.Add(currentDivarPost);
+                }
 
-                posts.Add(currentDivarPost);
-
+                return posts;
 
             }
+            catch (Exception)
+            {
 
-            return posts;
+                return posts;
+            }
+           
+
 
 
         }
@@ -112,47 +154,83 @@ namespace DivarAPI3
 
         public void AproveAdvertisement(string accessToken, string managmentToken)
         {
-            string aproveUrl = String.Format("https://api.divar.ir/v8/ongoingposts/{}/claim", managmentToken);
+            string aproveUrl = String.Format("https://api.divar.ir/v8/ongoingposts/{0}/claim", managmentToken);
+            
+            try
+            {
+                string result = client.UploadString(aproveUrl, "");
+            }
+            catch (Exception)
+            {
+
                 
-            client.Headers.Add("Authorization", "Bearer " + accessToken);
-            string result = client.DownloadString(aproveUrl);
+            }
+           
 
         }
 
 
         public void DeleteAdvertisment(string accessToken,string managmentToken)
         {
-            string deleteUrl = String.Format("https://api.divar.ir/v8/ongoingposts/{}", managmentToken);
-            string fullUrl = String.Format("{}?answer=&question_tag=note&reason=R", deleteUrl);
+            string deleteUrl = string.Format("https://api.divar.ir/v8/ongoingposts/{0}", managmentToken);
+            string fullUrl = string.Format("{0}?answer=&question_tag=note&reason=R", deleteUrl);
+            try
+            {
+                client.UploadString(fullUrl, "DELETE","");
+            }
+            catch (Exception)
+            {
 
+                
+            }
 
-            client.Headers.Add("Authorization", "Bearer " + accessToken);
-            client.UploadString(fullUrl, "DELETE");
-
-            string result = client.DownloadString(fullUrl);
+            //string result = client.DownloadString(fullUrl);
         }
 
 
-        public void DeleteAllAdevertisment()
+        public void AproveAllAdvertisment()
         {
             foreach (DivarPost post in this.Posts)
             {
                 try
                 {
-                    DeleteAdvertisment(post.token, post.managementToken);
+                    AproveAdvertisement(post.token, post.managementToken);
                 }
                 catch (Exception)
                 {
 
-                    throw;
+                    
+                }
+            }
+        }
+
+        public void DeleteAllAdevertisment(int type)
+        {
+            foreach (DivarPost post in this.Posts)
+            {
+                try
+                {
+                    State currentPostState = post.statusCode;
+                    if (type == 1 && currentPostState == State.InQue)  DeleteAdvertisment(post.token, post.managementToken);
+                    if (type == 2 && currentPostState == State.Apprive)  DeleteAdvertisment(post.token, post.managementToken);
+                    if (type == 3)  DeleteAdvertisment(post.token, post.managementToken);
+
+                }
+                catch (Exception)
+                {
+
+                    
                 }
 
             }    
         }
     }
 
+
+
     public static class Messages
     {
         const string ready = "plese select your excel file";
+
     }
 }
