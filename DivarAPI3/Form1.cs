@@ -30,5 +30,15 @@ namespace DivarAPI3
             //Divar.GetData();
             //myDivar.GetData();
         }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
