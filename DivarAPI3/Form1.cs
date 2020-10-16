@@ -7,9 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.Threading;
 namespace DivarAPI3
 {
+
     public partial class Form1 : Form
     {
 
@@ -17,6 +18,59 @@ namespace DivarAPI3
         MyExcel refrenceDataBase;
         List<string> tokens=new List<string>();
         int deletType = 0;
+
+        const string btnApplySend= "ارسال";
+        const string btnApplycancel = "انصراف";
+
+        static string state = "STOP";
+        static int DelayTime = 1; //permint
+
+        public void FillTimes()
+        {
+            cmbPeriod.Items.Add(new TimeInterval("فوری", 1));
+            cmbPeriod.Items.Add(new TimeInterval("هر 20 دقیقه", 20));
+            cmbPeriod.Items.Add(new TimeInterval("هر 40 دقیقه", 40));
+            cmbPeriod.Items.Add(new TimeInterval("هر یک ساعت", 60));
+
+            cmbPeriod.Text = cmbPeriod.Items[0].ToString();
+        }
+
+        public async  void Test()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                cmbPeriod.Items.Add(i.ToString());
+                
+            }
+        }
+        public async void StartDeleteOrApprove()
+        {
+            int index = 0;
+            
+            int totalNumber = tokens.Count();
+            string operationType="None";
+            if (rdoApprove.Checked) operationType = "DELETE";
+            else if(rdoDelete.Checked) operationType = "APPROVE";
+
+            statusText.Text = "please wait:";
+            foreach (var token in tokens)
+            {
+                index++;
+
+                progressPrecent.Visible = true;
+                progressPrecent.Value = (int)(index / totalNumber) * 100;
+
+                divarInstance = new Divar(token);
+                divarInstance.GetPosts();
+                if (operationType == "DELETE") divarInstance.AproveAllAdvertisment();
+                else if (operationType == "APPROVE") divarInstance.DeleteAllAdevertisment(deletType);
+                await Task.Delay(DelayTime);
+
+            }
+            statusText.Text = "finish approve advertisment";
+
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -26,6 +80,7 @@ namespace DivarAPI3
         /// </summary>
         /// <param name="dataGridToFill"></param>
         /// <param name="myList"></param>
+        /// 
         public void EnterListInDataGridView(DataGridView dataGridToFill, List<string> myList)
         {
             int index = 1;
@@ -74,80 +129,37 @@ namespace DivarAPI3
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+            FillTimes();
+
+                
         }
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            int index = 0;
+            // check for license
+            Boolean licenseState = License.CheckLicense();
+            if (!licenseState) return;
             
-            int totalNumber = tokens.Count();
-            if (rdoApprove.Checked)
+            if (btnApply.Text == btnApplySend)
             {
+                btnApply.Text = btnApplycancel;
+                state = "START";
+                //StartDeleteOrApprove();
+                Test();
 
-
-                foreach (var token in tokens)
-                {
-                    index++;
-
-                    progressPrecent.Visible = true;
-                    progressPrecent.Value = (int)(index / totalNumber) * 100;
-
-                    divarInstance = new Divar(token);
-                    divarInstance.GetPosts();
-                    statusText.Text = "please wait:";
-                    divarInstance.AproveAllAdvertisment();
-                    statusText.Text = "finish remove advertisment";
-
-                }
-
-            }
-            else if (rdoDelete.Checked)
-            {
-                statusText.Text = "please wait:";
-                foreach (var token in tokens)
-                {
-
-                    index++;
-
-                    progressPrecent.Visible = true;
-                    progressPrecent.Value =(int) (index / totalNumber)*100;
-
-
-                    divarInstance = new Divar(token);
-                    divarInstance.GetPosts();
-                    
-                    divarInstance.DeleteAllAdevertisment(deletType);
-                   
-                }
-                statusText.Text = "finish approve advertisment";
             }
             else
             {
 
+                btnApply.Text = btnApplySend;
+                state = "STOP";
             }
-
+           
         }
 
-        private void rdoApprove_CheckedChanged(object sender, EventArgs e)
-        {
 
-        }
 
-        private void groupBox2_Enter(object sender, EventArgs e)
-        {
 
-        }
-
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dataGridViewTokens_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
 
 
 
@@ -175,5 +187,31 @@ namespace DivarAPI3
             }
             MessageBox.Show(deletType.ToString());
         }
+
+        private void cmbPeriod_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var currentItem = (TimeInterval)cmbPeriod.SelectedItem;
+            DelayTime = 1000*60*currentItem.Value;
+
+
+        }
     }
+
+
+
+    public class TimeInterval
+    {
+        public string Name;
+        public int Value;
+        public TimeInterval(string name, int value)
+        {
+            Name = name; Value = value;
+        }
+        public override string ToString()
+        {
+            // Generates the text shown in the combo box
+            return Name;
+        }
+    }
+
 }
