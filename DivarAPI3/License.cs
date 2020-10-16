@@ -8,15 +8,15 @@ using System.Net.Http;
 using Microsoft.VisualBasic;
 using System.Net;
 using Newtonsoft.Json.Linq;
-using RestSharp;
-
+using System.IO;
 namespace DivarAPI3
 {
     class License
     {
         string apiURL;
-        static string   ID= "1602773814";
+        static string ID= "1602773814";
         static string licenseURL = "https://mjmi.ir/Panel/Licence/api";
+        static string filePath=@"C:\test.txt";
         public static string RegisterEmail{
             get
             {
@@ -89,7 +89,25 @@ namespace DivarAPI3
 
         }
 
+        public static Boolean CheckFileLincense()
+        {
+            
+            bool result= File.Exists(filePath);
+            return result;
+
+        }
         
+        public static Boolean CheckLicense()
+        {
+            Boolean internetLicense = License.CheckInternetLicense();
+            Boolean fileLicense = License.CheckFileLincense();
+            if (internetLicense && fileLicense) return true;
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("not valid license");
+                return false;
+            }
+        }
 
 
     }
