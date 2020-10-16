@@ -163,11 +163,13 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Vazir", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
             this.label1.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.label1.Location = new System.Drawing.Point(281, 87);
+            this.label1.Location = new System.Drawing.Point(285, 84);
             this.label1.Name = "label1";
+            this.label1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.label1.Size = new System.Drawing.Size(42, 21);
             this.label1.TabIndex = 19;
             this.label1.Text = "تناوب";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // cmbPeriod
             // 
@@ -199,9 +201,11 @@
             // chkDeleteRegister
             // 
             this.chkDeleteRegister.AutoSize = true;
+            this.chkDeleteRegister.Checked = true;
+            this.chkDeleteRegister.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkDeleteRegister.Font = new System.Drawing.Font("Vazir", 9F, System.Drawing.FontStyle.Bold);
             this.chkDeleteRegister.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.chkDeleteRegister.Location = new System.Drawing.Point(116, 16);
+            this.chkDeleteRegister.Location = new System.Drawing.Point(242, 16);
             this.chkDeleteRegister.Name = "chkDeleteRegister";
             this.chkDeleteRegister.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.chkDeleteRegister.Size = new System.Drawing.Size(81, 23);
@@ -216,7 +220,7 @@
             this.chkDeleteQueue.AutoSize = true;
             this.chkDeleteQueue.Font = new System.Drawing.Font("Vazir", 9F, System.Drawing.FontStyle.Bold);
             this.chkDeleteQueue.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.chkDeleteQueue.Location = new System.Drawing.Point(227, 16);
+            this.chkDeleteQueue.Location = new System.Drawing.Point(116, 16);
             this.chkDeleteQueue.Name = "chkDeleteQueue";
             this.chkDeleteQueue.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.chkDeleteQueue.Size = new System.Drawing.Size(96, 23);

@@ -165,27 +165,14 @@ namespace DivarAPI3
 
         private void chkDeleteRegister_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkDeleteRegister.Checked)
-                deletType+=2;
-            else
-            {
-                deletType-=2;
-            }
-
-            MessageBox.Show(deletType.ToString());
-
-
+            if (chkDeleteRegister.Checked) deletType += 2;
+            else deletType -= 2;
         }
 
         private void chkDeleteQueue_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkDeleteQueue.Checked)
-                deletType++;
-            else
-            {
-                deletType--;
-            }
-            MessageBox.Show(deletType.ToString());
+            if (chkDeleteQueue.Checked) deletType++;
+            else deletType--;
         }
 
         private void cmbPeriod_SelectedIndexChanged(object sender, EventArgs e)
