@@ -69,7 +69,7 @@ namespace DivarAPI3
             //this use for #Test Only
             try
             {
-                openDialog.InitialDirectory = @"C:";
+                openDialog.InitialDirectory = @"E:\gholami\DivarAPI3\test";
             }
             catch (Exception)
             {

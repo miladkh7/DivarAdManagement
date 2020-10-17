@@ -18,6 +18,7 @@ namespace DivarAPI3
         Other = 0,
 
     }
+    
     static class Program
     {
         /// <summary>
@@ -41,38 +42,30 @@ namespace DivarAPI3
         const string postDeleted = "حذف شده";
 
 
+
+
         private string _title, _date, _token,_management_token;
+        private int _postTime;
         private State _statusCode =State.Other;
-        
-        public string token
-        {
-            get { return _token; }
-        }
 
-        public string managementToken
-        {
-            get { return _management_token; }
-        }
+        public string token => _token;
 
-        public State statusCode
-        {
-            get
-            {
-                return _statusCode;
-            }
-        }
-        public DivarPost(string title,string manageToken, string token,State status)
+        // new syntax for properties
+        public string managementToken => _management_token;
+        public int postTime => _postTime;
+
+        public State statusCode => _statusCode;
+        public DivarPost(string title,string manageToken, string token,State status,int postTime)
         {
             this._title = title;
             this._token = token;
             this._management_token = manageToken;
             this._statusCode = status;
+            this._postTime = postTime;
 
         }
-        public override string ToString()
-        {
-            return this._management_token;
-        }
+        public override string ToString()=> this._management_token;
+
 
 
 
@@ -131,8 +124,11 @@ namespace DivarAPI3
                     string newPostTitle = item["data"]["title"].ToString();
                     string newPostToken = item["data"]["manage_token"].ToString();
                     string persianTempStatus = item["data"]["status"].ToString();
+                    string persianTempTime = item["data"]["date"].ToString();
+
                     State newPostStatus = DivarPost.GetStatusCode(persianTempStatus);
-                    DivarPost currentDivarPost = new DivarPost(newPostTitle, newPostToken, accessToken, newPostStatus);
+                    int postTime = PublishTime.TimeToCode(persianTempTime);
+                    DivarPost currentDivarPost = new DivarPost(newPostTitle, newPostToken, accessToken, newPostStatus, postTime);
              
                     posts.Add(currentDivarPost);
                 }
@@ -204,12 +200,14 @@ namespace DivarAPI3
             }
         }
 
-        public void DeleteAllAdevertisment(int type)
+        public void DeleteAllAdevertisment(int type,int deleteTime)
         {
             foreach (DivarPost post in this.Posts)
             {
                 try
                 {
+
+                    if (post.postTime < deleteTime) continue;
                     State currentPostState = post.statusCode;
                     if (type == 1 && currentPostState == State.InQue)  DeleteAdvertisment(post.token, post.managementToken);
                     if (type == 2 && currentPostState == State.Apprive)  DeleteAdvertisment(post.token, post.managementToken);

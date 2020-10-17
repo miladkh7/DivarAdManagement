@@ -24,6 +24,7 @@ namespace DivarAPI3
 
         static string state = "STOP";
         static int DelayTime = 1; //permint
+        static int deletTime = 1;
 
         public void FillTimes()
         {
@@ -33,6 +34,15 @@ namespace DivarAPI3
             cmbPeriod.Items.Add(new TimeInterval("هر یک ساعت", 60));
 
             cmbPeriod.Text = cmbPeriod.Items[0].ToString();
+        }
+
+        public void FillDeleteTimes()
+        {
+            cmbdeleteTime.Items.Add(new PublishTime("لحظاتی قبل", 0));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از یک ساعت پیش",4));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از یک روز پیش", 10));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از یک هفته پیش", 20));
+            cmbdeleteTime.Text = cmbdeleteTime.Items[0].ToString();
         }
 
         public async  void Test()
@@ -55,6 +65,7 @@ namespace DivarAPI3
             statusText.Text = "please wait:";
             foreach (var token in tokens)
             {
+                if (state == "STOP") break;
                 index++;
 
                 progressPrecent.Visible = true;
@@ -62,9 +73,13 @@ namespace DivarAPI3
 
                 divarInstance = new Divar(token);
                 divarInstance.GetPosts();
-                if (operationType == "DELETE") divarInstance.AproveAllAdvertisment();
-                else if (operationType == "APPROVE") divarInstance.DeleteAllAdevertisment(deletType);
-                await Task.Delay(DelayTime);
+                if (operationType == "APPROVE")
+                {
+                    divarInstance.AproveAllAdvertisment();
+                    await Task.Delay(DelayTime);
+                }
+                else if (operationType == "DELETE") divarInstance.DeleteAllAdevertisment(deletType, deletTime);
+                
 
             }
             statusText.Text = "finish approve advertisment";
@@ -91,16 +106,7 @@ namespace DivarAPI3
                 index++;
             }
         }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //string accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiMDkxOTcyODcwNTgiLCJleHAiOjE2MDM5NTY4MTIuOTQ4MDQxLCJ2ZXJpZmllZF90aW1lIjoxNjAyNjYwODEyLjk0ODAyMiwidXNlci10eXBlIjoibWFya2V0cGxhY2UtYnVzaW5lc3MifQ.SaPGMEC21kAcjQKnN7ojp4EGYlqE4hGQDL_bFMEx-Nk";
 
-            //Divar myDivar = new Divar();
-            //List myDivar.GetData(accessToken);
-            //MessageBox.Show(re);
-            //Divar.GetData();
-            //myDivar.GetData();
-        }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -123,6 +129,8 @@ namespace DivarAPI3
                 dataGridViewTokens.Refresh();
                 EnterListInDataGridView(dataGridViewTokens, tokens);
 
+                btnApply.Enabled = true;
+
             }
 
         }
@@ -130,8 +138,9 @@ namespace DivarAPI3
         private void Form1_Load(object sender, EventArgs e)
         {
             FillTimes();
+            FillDeleteTimes();
 
-                
+
         }
 
         private void btnApply_Click(object sender, EventArgs e)
@@ -144,8 +153,8 @@ namespace DivarAPI3
             {
                 btnApply.Text = btnApplycancel;
                 state = "START";
-                //StartDeleteOrApprove();
-                Test();
+                StartDeleteOrApprove();
+                //Test();
 
             }
             else
@@ -182,23 +191,20 @@ namespace DivarAPI3
 
 
         }
-    }
 
-
-
-    public class TimeInterval
-    {
-        public string Name;
-        public int Value;
-        public TimeInterval(string name, int value)
+        private void cmbdeleteTime_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Name = name; Value = value;
-        }
-        public override string ToString()
-        {
-            // Generates the text shown in the combo box
-            return Name;
+            var currentItem = (PublishTime)cmbdeleteTime.SelectedItem;
+            deletTime = currentItem.Value;
         }
     }
+
+
+
+
+
+
+
+
 
 }
