@@ -18,7 +18,7 @@ namespace DivarAPI3
         MyExcel refrenceDataBase;
         List<string> tokens=new List<string>();
         int deletType = 2;
-        static string operationType = "None";
+        static string operationType = "APPROVE";
         const string btnApplySend= "ارسال";
         const string btnApplycancel = "انصراف";
 
@@ -38,6 +38,7 @@ namespace DivarAPI3
         public void FillTimes()
         {
             cmbPeriod.Items.Add(new TimeInterval("فوری", 0));
+            cmbPeriod.Items.Add(new TimeInterval("هر 1 دقیقه", 1));
             cmbPeriod.Items.Add(new TimeInterval("هر 20 دقیقه", 20));
             cmbPeriod.Items.Add(new TimeInterval("هر 40 دقیقه", 40));
             cmbPeriod.Items.Add(new TimeInterval("هر یک ساعت", 60));
@@ -224,6 +225,11 @@ namespace DivarAPI3
                 operationType = "DELETE";
                 ChangeItemSate();
             }
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 
