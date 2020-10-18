@@ -184,13 +184,15 @@ namespace DivarAPI3
         }
 
 
-        public void AproveAllAdvertisment()
+        public async void AproveAllAdvertisment(int DelayTime)
         {
             foreach (DivarPost post in this.Posts)
             {
+                if (post.statusCode != State.WaitForAporve) continue;
                 try
                 {
                     AproveAdvertisement(post.token, post.managementToken);
+                    await Task.Delay(DelayTime);
                 }
                 catch (Exception)
                 {
@@ -207,11 +209,15 @@ namespace DivarAPI3
                 try
                 {
 
-                    if (post.postTime < deleteTime) continue;
+                   
                     State currentPostState = post.statusCode;
                     if (type == 1 && currentPostState == State.InQue)  DeleteAdvertisment(post.token, post.managementToken);
+                    if (type == 3) DeleteAdvertisment(post.token, post.managementToken);
+
+                    if (post.postTime < deleteTime) continue;
+
                     if (type == 2 && currentPostState == State.Apprive)  DeleteAdvertisment(post.token, post.managementToken);
-                    if (type == 3)  DeleteAdvertisment(post.token, post.managementToken);
+                   
 
                 }
                 catch (Exception)

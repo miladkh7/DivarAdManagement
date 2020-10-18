@@ -49,9 +49,18 @@ namespace DivarAPI3
             }
 
             string[] persianTime = { "لحضاتی پیش", "دقایقی", "ربع", "نیم", "دیروز", "پریروز", "روز", "هفته" };
+            int number = 0;
+            try
+            {
+                var numberObject = Regex.Match(raw_time, @"\d+").Value;
+                number = int.Parse(numberObject);
+            }
+            catch (Exception)
+            {
 
-            var numberObject = Regex.Match(raw_time, @"\d+").Value;
-            int number = int.Parse(numberObject);
+                 
+            }
+
             int result = 0;
 
             if (raw_time.Contains(persianTime[0])) result = 1;

@@ -39,6 +39,7 @@ namespace DivarAPI3
         {
             cmbPeriod.Items.Add(new TimeInterval("فوری", 0));
             cmbPeriod.Items.Add(new TimeInterval("هر 1 دقیقه", 1));
+            cmbPeriod.Items.Add(new TimeInterval("هر 5 دقیقه", 5));
             cmbPeriod.Items.Add(new TimeInterval("هر 20 دقیقه", 20));
             cmbPeriod.Items.Add(new TimeInterval("هر 40 دقیقه", 40));
             cmbPeriod.Items.Add(new TimeInterval("هر یک ساعت", 60));
@@ -82,10 +83,11 @@ namespace DivarAPI3
 
                 divarInstance = new Divar(token);
                 divarInstance.GetPosts();
+                if (divarInstance.Posts.Count() == 0) continue;
                 if (operationType == "APPROVE")
                 {
-                    divarInstance.AproveAllAdvertisment();
-                    await Task.Delay(DelayTime);
+                    divarInstance.AproveAllAdvertisment(DelayTime);
+                    //await Task.Delay(DelayTime);
                 }
                 else if (operationType == "DELETE") divarInstance.DeleteAllAdevertisment(deletType, deletTime);
                 
