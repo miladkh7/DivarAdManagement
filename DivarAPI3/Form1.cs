@@ -17,8 +17,8 @@ namespace DivarAPI3
         static Divar divarInstance;
         MyExcel refrenceDataBase;
         List<string> tokens=new List<string>();
-        int deletType = 0;
-
+        int deletType = 2;
+        static string operationType = "None";
         const string btnApplySend= "ارسال";
         const string btnApplycancel = "انصراف";
 
@@ -26,9 +26,18 @@ namespace DivarAPI3
         static int DelayTime = 1; //permint
         static int deletTime = 1;
 
+        public void ChangeItemSate()
+        {
+
+            chkDeleteQueue.Enabled = !chkDeleteQueue.Enabled;
+            chkDeleteRegister.Enabled = !chkDeleteRegister.Enabled;
+            cmbdeleteTime.Enabled = !cmbdeleteTime.Enabled;
+            cmbPeriod.Enabled = !cmbPeriod.Enabled;
+
+        }
         public void FillTimes()
         {
-            cmbPeriod.Items.Add(new TimeInterval("فوری", 1));
+            cmbPeriod.Items.Add(new TimeInterval("فوری", 0));
             cmbPeriod.Items.Add(new TimeInterval("هر 20 دقیقه", 20));
             cmbPeriod.Items.Add(new TimeInterval("هر 40 دقیقه", 40));
             cmbPeriod.Items.Add(new TimeInterval("هر یک ساعت", 60));
@@ -58,9 +67,8 @@ namespace DivarAPI3
             int index = 0;
             
             int totalNumber = tokens.Count();
-            string operationType="None";
-            if (rdoApprove.Checked) operationType = "DELETE";
-            else if(rdoDelete.Checked) operationType = "APPROVE";
+            
+
 
             statusText.Text = "please wait:";
             foreach (var token in tokens)
@@ -69,7 +77,7 @@ namespace DivarAPI3
                 index++;
 
                 progressPrecent.Visible = true;
-                progressPrecent.Value = (int)(index / totalNumber) * 100;
+                progressPrecent.Value = (int)(100*index / totalNumber);
 
                 divarInstance = new Divar(token);
                 divarInstance.GetPosts();
@@ -82,7 +90,7 @@ namespace DivarAPI3
                 
 
             }
-            statusText.Text = "finish approve advertisment";
+            statusText.Text = "finish operation advertisment";
 
         }
 
@@ -154,6 +162,7 @@ namespace DivarAPI3
                 btnApply.Text = btnApplycancel;
                 state = "START";
                 StartDeleteOrApprove();
+                btnApply.Text = btnApplySend;
                 //Test();
 
             }
@@ -196,6 +205,25 @@ namespace DivarAPI3
         {
             var currentItem = (PublishTime)cmbdeleteTime.SelectedItem;
             deletTime = currentItem.Value;
+        }
+
+        private void rdoApprove_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdoApprove.Checked)
+            {
+                operationType = "APPROVE";
+                ChangeItemSate();
+            }
+            
+        }
+
+        private void rdoDelete_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdoDelete.Checked)
+            {
+                operationType = "DELETE";
+                ChangeItemSate();
+            }
         }
     }
 
