@@ -99,14 +99,16 @@ namespace DivarAPI3
             client.Headers[HttpRequestHeader.ContentType] = "application/json";
             client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; " +
                       "Windows NT 5.2; .NET CLR 1.0.3705;)");
+
             client.Headers.Add("Authorization", "Bearer " + accessToken);
             Posts = new List<DivarPost>();
         }
 
 
-        public void GetPosts()
+        public List<DivarPost> GetPosts()
         {
             this.Posts = GetData(this.accessToken);
+            return this.Posts;
         }
 
         public static List<DivarPost> GetData(string accessToken)
@@ -148,85 +150,97 @@ namespace DivarAPI3
         }
 
 
-        public void AproveAdvertisement(string accessToken, string managmentToken)
+        public static void AproveAdvertisement(string accessToken, string managmentToken)
         {
             string aproveUrl = String.Format("https://api.divar.ir/v8/ongoingposts/{0}/claim", managmentToken);
             
             try
             {
+                client.Headers.Remove("Authorization");
+                client.Headers.Add("Authorization", "Bearer " + accessToken);
                 string result = client.UploadString(aproveUrl, "");
             }
             catch (Exception)
             {
 
-                
+                MessageBox.Show("error in  send approve request");
             }
            
 
         }
 
 
-        public void DeleteAdvertisment(string accessToken,string managmentToken)
+        public static void DeleteAdvertisment(string accessToken,string managmentToken)
         {
             string deleteUrl = string.Format("https://api.divar.ir/v8/ongoingposts/{0}", managmentToken);
             string fullUrl = string.Format("{0}?answer=&question_tag=note&reason=R", deleteUrl);
             try
             {
+                client.Headers.Remove("Authorization");
+                client.Headers.Add("Authorization", "Bearer " + accessToken);
                 client.UploadString(fullUrl, "DELETE","");
             }
             catch (Exception)
             {
+                MessageBox.Show("error in deete advertismet api");
 
-                
             }
 
             //string result = client.DownloadString(fullUrl);
         }
 
-
-        public async void AproveAllAdvertisment(int DelayTime)
+        public static void ApproveAdveretismentList(int DelayTime, List<DivarPost> postlists)
         {
-            foreach (DivarPost post in this.Posts)
+            foreach (DivarPost post in postlists)
             {
                 if (post.statusCode != State.WaitForAporve) continue;
                 try
                 {
+
                     AproveAdvertisement(post.token, post.managementToken);
-                    await Task.Delay(DelayTime);
+                   
                 }
                 catch (Exception)
                 {
 
-                    
+
                 }
+            }
+        }
+        public async void AproveAllAdvertisment(int DelayTime)
+        {
+            ApproveAdveretismentList(DelayTime, this.Posts);
+        }
+        public static void DeleteAdvertismentList(int type,int deleteTime,List<DivarPost> postlists)
+        {
+            foreach (DivarPost post in postlists)
+            {
+                try
+                {
+
+
+                    State currentPostState = post.statusCode;
+                    if (type == 1 && currentPostState == State.InQue) DeleteAdvertisment(post.token, post.managementToken);
+                    if (type == 3) DeleteAdvertisment(post.token, post.managementToken);
+
+                    if (post.postTime < deleteTime) continue;
+
+                    if (type == 2 && currentPostState == State.Apprive) DeleteAdvertisment(post.token, post.managementToken);
+
+
+                }
+                catch (Exception)
+                {
+
+
+                }
+
             }
         }
 
         public void DeleteAllAdevertisment(int type,int deleteTime)
         {
-            foreach (DivarPost post in this.Posts)
-            {
-                try
-                {
-
-                   
-                    State currentPostState = post.statusCode;
-                    if (type == 1 && currentPostState == State.InQue)  DeleteAdvertisment(post.token, post.managementToken);
-                    if (type == 3) DeleteAdvertisment(post.token, post.managementToken);
-
-                    if (post.postTime < deleteTime) continue;
-
-                    if (type == 2 && currentPostState == State.Apprive)  DeleteAdvertisment(post.token, post.managementToken);
-                   
-
-                }
-                catch (Exception)
-                {
-
-                    
-                }
-
-            }    
+            DeleteAdvertismentList(type, deleteTime, this.Posts);
         }
     }
 

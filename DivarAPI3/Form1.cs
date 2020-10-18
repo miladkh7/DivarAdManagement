@@ -17,6 +17,7 @@ namespace DivarAPI3
         static Divar divarInstance;
         MyExcel refrenceDataBase;
         List<string> tokens=new List<string>();
+        List<DivarPost> publishList;
         int deletType = 2;
         static string operationType = "APPROVE";
         const string btnApplySend= "ارسال";
@@ -50,9 +51,31 @@ namespace DivarAPI3
         public void FillDeleteTimes()
         {
             cmbdeleteTime.Items.Add(new PublishTime("لحظاتی قبل", 0));
-            cmbdeleteTime.Items.Add(new PublishTime("بیش از یک ساعت پیش",4));
-            cmbdeleteTime.Items.Add(new PublishTime("بیش از یک روز پیش", 10));
-            cmbdeleteTime.Items.Add(new PublishTime("بیش از یک هفته پیش", 20));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از یک ربع پیش", 3));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از یک نیم ساعت پیش", 4));
+
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از یک ساعت پیش",10));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 2 ساعت پیش", 11));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 4 ساعت پیش", 12));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 8 ساعت پیش", 13));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 9 ساعت پیش", 14));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 10 ساعت پیش", 15));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 11 ساعت پیش",16));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 12 ساعت پیش", 17));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 13 ساعت پیش", 18));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 18 ساعت پیش", 23));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 19 ساعت پیش", 24));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 20 ساعت پیش", 25));
+
+
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از یک روز پیش", 100));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 2 روز پیش", 110));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 3 روز پیش", 120));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 4 روز پیش", 130));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 5 روز پیش", 140));
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از 6 روز پیش", 150));
+
+            cmbdeleteTime.Items.Add(new PublishTime("بیش از یک هفته پیش", 200));
             cmbdeleteTime.Text = cmbdeleteTime.Items[0].ToString();
         }
 
@@ -68,34 +91,68 @@ namespace DivarAPI3
         {
             int index = 0;
             
-            int totalNumber = tokens.Count();
-            
-
+            publishList = new List<DivarPost>();
 
             statusText.Text = "please wait:";
+
+            // collect all tokens
             foreach (var token in tokens)
             {
-                if (state == "STOP") break;
-                index++;
-
-                progressPrecent.Visible = true;
-                progressPrecent.Value = (int)(100*index / totalNumber);
-
                 divarInstance = new Divar(token);
                 divarInstance.GetPosts();
                 if (divarInstance.Posts.Count() == 0) continue;
-                if (operationType == "APPROVE")
+                foreach (DivarPost post in divarInstance.Posts)
                 {
-                    divarInstance.AproveAllAdvertisment(DelayTime);
-                    //await Task.Delay(DelayTime);
+                    
+                    publishList.Add(post);
                 }
-                else if (operationType == "DELETE") divarInstance.DeleteAllAdevertisment(deletType, deletTime);
-                
-
             }
-            statusText.Text = "finish operation advertisment";
 
+            int totalNumber = publishList.Count();
+            //operate 
+            if (operationType == "APPROVE")
+            {
+                progressPrecent.Visible = true;
+
+
+
+                foreach (DivarPost post in publishList)
+                {
+                    if (post.statusCode != State.WaitForAporve) continue;
+                    try
+                    {
+                        index++;
+
+
+
+                        Divar.AproveAdvertisement(post.token, post.managementToken);
+                        progressPrecent.Value = (int)(100 * index / totalNumber);
+                        statusText.Text = string.Format("process {0} from {1} post", index, totalNumber);
+                        await Task.Delay(DelayTime);
+                    }
+                    catch (Exception)
+                    {
+
+
+                    }
+
+                }
+            }
+            else if (operationType == "DELETE")
+            {
+                Divar.DeleteAdvertismentList(deletType, deletTime, publishList);
+                MessageBox.Show(string.Format("{0} post process for deleting", totalNumber));
+            }
+            
+
+
+            statusText.Text = "finish operation advertisment";
         }
+
+
+
+
+        
 
         public Form1()
         {

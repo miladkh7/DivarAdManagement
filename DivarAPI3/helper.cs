@@ -48,7 +48,7 @@ namespace DivarAPI3
                 raw_time = raw_time.ToString().Replace(persianNumber[i], english[i]);
             }
 
-            string[] persianTime = { "لحضاتی پیش", "دقایقی", "ربع", "نیم", "دیروز", "پریروز", "روز", "هفته" };
+            string[] persianTime = { "لحضاتی پیش", "دقایقی", "ربع", "نیم","ساعت", "دیروز", "پریروز", "روز", "هفته" };
             int number = 0;
             try
             {
@@ -63,14 +63,16 @@ namespace DivarAPI3
 
             int result = 0;
 
-            if (raw_time.Contains(persianTime[0])) result = 1;
-            if (raw_time.Contains(persianTime[1])) result = 2;
-            if (raw_time.Contains(persianTime[2])) result = 3;
-            if (raw_time.Contains(persianTime[3])) result = 4;
-            if (raw_time.Contains(persianTime[4])) result = 10;
-            if (raw_time.Contains(persianTime[5])) result = 11;
-            if (raw_time.Contains(persianTime[6])) result = 10 + number;
-            if (raw_time.Contains(persianTime[7])) result = 20 + number;
+            if (raw_time.Contains(persianTime[0])) result = 1;// lahze
+            if (raw_time.Contains(persianTime[1])) result = 2;// daghighe
+            if (raw_time.Contains(persianTime[2])) result = 3;//rob
+            if (raw_time.Contains(persianTime[3])) result = 4;//nim
+            if (raw_time.Contains(persianTime[4])) result = 10+ number;//saat
+            if (raw_time.Contains(persianTime[5])) result = 100;//diroz
+            if (raw_time.Contains(persianTime[6])) result = 110;//payroz
+            if (raw_time.Contains(persianTime[7])) result = 100 +(10* number);//rozaye pish
+            if (raw_time.Contains(persianTime[8])) result = 200 + (10 * number);//hafte pish
+
             return result;
 
         }
