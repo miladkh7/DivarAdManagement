@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Drawing;
 namespace DivarAPI3
 {
 
@@ -79,4 +81,36 @@ namespace DivarAPI3
 
     }
 
+    public class ControlDataGrid
+    {
+        public ControlDataGrid()
+        {
+
+        }
+
+        public static DataGridViewRow GetCurrentDataGrid(DataGridView tokensDataGrid, string searchValue)
+        {
+            foreach (DataGridViewRow row in tokensDataGrid.Rows)
+            {
+                if (row.Cells[1].Value.ToString().Equals(searchValue))
+                {
+                    return row;
+                    break;
+                }
+
+            }
+            return tokensDataGrid.Rows[0];
+        }
+        public static void SetDataGridRowOnProcess(DataGridViewRow row)
+        {
+            row.DefaultCellStyle.BackColor = Color.Green;
+            row.DefaultCellStyle.ForeColor = Color.Black;
+        }
+
+        public static void SetDataGridRowError(DataGridViewRow row)
+        {
+            row.DefaultCellStyle.BackColor = Color.Red;
+            row.DefaultCellStyle.ForeColor = Color.Black;
+        }
+    }
 }

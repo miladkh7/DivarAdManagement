@@ -85,7 +85,7 @@ namespace DivarAPI3
     {
         public static WebClient client;
         public string accessToken;
-
+        public static List<string> badTokens;
         public List<DivarPost> Posts;
 
 
@@ -213,8 +213,12 @@ namespace DivarAPI3
         }
         public static void DeleteAdvertismentList(int type,int deleteTime,List<DivarPost> postlists)
         {
+
+            badTokens = new List<string>();
             foreach (DivarPost post in postlists)
             {
+
+ 
                 try
                 {
 
@@ -231,7 +235,7 @@ namespace DivarAPI3
                 }
                 catch (Exception)
                 {
-
+                    badTokens.Add(post.token);
 
                 }
 

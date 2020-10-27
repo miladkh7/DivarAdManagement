@@ -118,6 +118,10 @@ namespace DivarAPI3
 
                 foreach (DivarPost post in publishList)
                 {
+
+                    DataGridViewRow currentRow= ControlDataGrid.GetCurrentDataGrid(dataGridViewTokens, post.token);
+                    ControlDataGrid.SetDataGridRowOnProcess(currentRow);
+
                     if (post.statusCode != State.WaitForAporve) continue;
                     try
                     {
@@ -133,6 +137,7 @@ namespace DivarAPI3
                     catch (Exception)
                     {
 
+                        ControlDataGrid.SetDataGridRowError(currentRow);
 
                     }
 
@@ -140,7 +145,13 @@ namespace DivarAPI3
             }
             else if (operationType == "DELETE")
             {
+                Divar.badTokens.Clear();
                 Divar.DeleteAdvertismentList(deletType, deletTime, publishList);
+                foreach (string token in Divar.badTokens)
+                {
+                    DataGridViewRow currentRow = ControlDataGrid.GetCurrentDataGrid(dataGridViewTokens, token);
+                    ControlDataGrid.SetDataGridRowOnProcess(currentRow);
+                }
                 MessageBox.Show(string.Format("{0} post process for deleting", totalNumber));
             }
             
@@ -176,6 +187,20 @@ namespace DivarAPI3
         }
 
 
+        //public  DataGridViewRow GetCurrentDataGrid(DataGridView tokensDataGrid,string searchValue)
+        //{
+        //    foreach (DataGridViewRow row in tokensDataGrid.Rows)
+        //    {
+        //        if (row.Cells[2].Value.ToString().Equals(searchValue))
+        //        {
+        //            return row;
+        //            break;
+        //        }
+               
+        //    }
+        //    return tokensDataGrid.Rows[0];
+        //}
+
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
@@ -201,7 +226,11 @@ namespace DivarAPI3
 
             }
 
+
+
+
         }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -287,6 +316,11 @@ namespace DivarAPI3
         }
 
         private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dataGridViewTokens_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }
