@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Office.Interop.Excel;
 using _Excel = Microsoft.Office.Interop.Excel;
 using System.Windows.Forms;
-namespace DivarAPI3
+namespace DivarAdManagment
 {
     class MyExcel
     {
@@ -69,7 +69,7 @@ namespace DivarAPI3
             //this use for #Test Only
             try
             {
-                openDialog.InitialDirectory = @"E:\gholami\DivarAPI3\test";
+                openDialog.InitialDirectory = @"E:\gholami\DivarAdManagment\test";
             }
             catch (Exception)
             {

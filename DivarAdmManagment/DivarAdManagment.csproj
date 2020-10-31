@@ -7,8 +7,8 @@
     <ProjectGuid>{F738938E-90AF-49F1-82A0-A84692300D7D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DivarAPI3</RootNamespace>
-    <AssemblyName>DivarAPI3</AssemblyName>
+    <RootNamespace>DivarAdManagment</RootNamespace>
+    <AssemblyName>DivarAdManagment</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -86,6 +86,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

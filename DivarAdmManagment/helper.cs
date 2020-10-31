@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Drawing;
-namespace DivarAPI3
+namespace DivarAdManagment
 {
 
     public class TimeInterval

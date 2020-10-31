@@ -9,7 +9,7 @@ using Microsoft.VisualBasic;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using System.IO;
-namespace DivarAPI3
+namespace DivarAdManagment
 {
     class License
     {

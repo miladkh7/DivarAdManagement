@@ -8,7 +8,7 @@ using System.Net;
 using Newtonsoft;
 using Newtonsoft.Json.Linq;
 using System.Text;
-namespace DivarAPI3
+namespace DivarAdManagment
 {
     enum State
     {
