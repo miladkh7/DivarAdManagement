@@ -145,7 +145,6 @@ namespace DivarAdManagment
             }
             else if (operationType == "DELETE")
             {
-                Divar.badTokens.Clear();
                 Divar.DeleteAdvertismentList(deletType, deletTime, publishList);
                 foreach (string token in Divar.badTokens)
                 {
@@ -154,7 +153,8 @@ namespace DivarAdManagment
                 }
                 MessageBox.Show(string.Format("{0} post process for deleting", totalNumber));
             }
-            
+
+            Divar.badTokens.Clear();
 
 
             statusText.Text = "finish operation advertisment";
