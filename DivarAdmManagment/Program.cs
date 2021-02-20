@@ -15,6 +15,7 @@ namespace DivarAdManagment
         WaitForAporve = 1,
         InQue = 2,
         Apprive = 3,
+        WaitForPayment=4,
         Other = 0,
 
     }
@@ -39,6 +40,7 @@ namespace DivarAdManagment
         const string postStatusWaitForAprove = "منتظر تایید شماره";
         const string postStatusInQueue = "در صف انتشار";
         const string postStatusApprove = "منتشر شده";
+        const string postStatusWaitForPayment = "منتظر پرداخت";
         const string postDeleted = "حذف شده";
 
 
@@ -74,6 +76,7 @@ namespace DivarAdManagment
             if ( postStatus==postStatusWaitForAprove)  return State.WaitForAporve;
             if (postStatus == postStatusInQueue)  return State.InQue;
             if (postStatus == postStatusApprove) return State.Apprive;
+            if (postStatus == postStatusWaitForPayment) return State.WaitForPayment;
             else { return State.Other; }
 
 
@@ -224,6 +227,7 @@ namespace DivarAdManagment
 
 
                     State currentPostState = post.statusCode;
+                    if (type>3) DeleteAdvertisment(post.token, post.managementToken);
                     if (type == 1 && currentPostState == State.InQue) DeleteAdvertisment(post.token, post.managementToken);
                     if (type == 3) DeleteAdvertisment(post.token, post.managementToken);
 

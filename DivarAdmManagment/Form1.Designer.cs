@@ -37,6 +37,7 @@
             this.statusText = new System.Windows.Forms.ToolStripSplitButton();
             this.progressPrecent = new System.Windows.Forms.ToolStripProgressBar();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.chkDeleteAll = new System.Windows.Forms.CheckBox();
             this.btnApply = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.cmbdeleteTime = new System.Windows.Forms.ComboBox();
@@ -109,6 +110,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.chkDeleteAll);
             this.groupBox2.Controls.Add(this.btnApply);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.cmbdeleteTime);
@@ -126,6 +128,22 @@
             this.groupBox2.TabIndex = 13;
             this.groupBox2.TabStop = false;
             this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
+            // 
+            // chkDeleteAll
+            // 
+            this.chkDeleteAll.AutoSize = true;
+            this.chkDeleteAll.Enabled = false;
+            this.chkDeleteAll.Font = new System.Drawing.Font("Vazir", 9F, System.Drawing.FontStyle.Bold);
+            this.chkDeleteAll.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.chkDeleteAll.Location = new System.Drawing.Point(116, 49);
+            this.chkDeleteAll.Name = "chkDeleteAll";
+            this.chkDeleteAll.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chkDeleteAll.Size = new System.Drawing.Size(90, 23);
+            this.chkDeleteAll.TabIndex = 24;
+            this.chkDeleteAll.Text = "همه آگهی ها";
+            this.chkDeleteAll.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkDeleteAll.UseVisualStyleBackColor = true;
+            this.chkDeleteAll.CheckedChanged += new System.EventHandler(this.chkDeleteAll_CheckedChanged);
             // 
             // btnApply
             // 
@@ -147,7 +165,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Vazir", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
             this.label2.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.label2.Location = new System.Drawing.Point(277, 45);
+            this.label2.Location = new System.Drawing.Point(277, 20);
             this.label2.Name = "label2";
             this.label2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.label2.Size = new System.Drawing.Size(50, 21);
@@ -160,7 +178,7 @@
             this.cmbdeleteTime.Enabled = false;
             this.cmbdeleteTime.Font = new System.Drawing.Font("Vazir", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
             this.cmbdeleteTime.FormattingEnabled = true;
-            this.cmbdeleteTime.Location = new System.Drawing.Point(116, 43);
+            this.cmbdeleteTime.Location = new System.Drawing.Point(116, 18);
             this.cmbdeleteTime.Name = "cmbdeleteTime";
             this.cmbdeleteTime.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.cmbdeleteTime.Size = new System.Drawing.Size(141, 27);
@@ -216,7 +234,7 @@
             this.chkDeleteRegister.Enabled = false;
             this.chkDeleteRegister.Font = new System.Drawing.Font("Vazir", 9F, System.Drawing.FontStyle.Bold);
             this.chkDeleteRegister.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.chkDeleteRegister.Location = new System.Drawing.Point(242, 16);
+            this.chkDeleteRegister.Location = new System.Drawing.Point(342, 49);
             this.chkDeleteRegister.Name = "chkDeleteRegister";
             this.chkDeleteRegister.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.chkDeleteRegister.Size = new System.Drawing.Size(81, 23);
@@ -232,7 +250,7 @@
             this.chkDeleteQueue.Enabled = false;
             this.chkDeleteQueue.Font = new System.Drawing.Font("Vazir", 9F, System.Drawing.FontStyle.Bold);
             this.chkDeleteQueue.ForeColor = System.Drawing.SystemColors.MenuHighlight;
-            this.chkDeleteQueue.Location = new System.Drawing.Point(116, 16);
+            this.chkDeleteQueue.Location = new System.Drawing.Point(216, 49);
             this.chkDeleteQueue.Name = "chkDeleteQueue";
             this.chkDeleteQueue.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.chkDeleteQueue.Size = new System.Drawing.Size(96, 23);
@@ -372,6 +390,7 @@
         private System.Windows.Forms.ComboBox cmbdeleteTime;
         private System.Windows.Forms.Button btnApply;
         public System.Windows.Forms.DataGridView dataGridViewTokens;
+        private System.Windows.Forms.CheckBox chkDeleteAll;
     }
 }
 

@@ -32,6 +32,7 @@ namespace DivarAdManagment
 
             chkDeleteQueue.Enabled = !chkDeleteQueue.Enabled;
             chkDeleteRegister.Enabled = !chkDeleteRegister.Enabled;
+            chkDeleteAll.Enabled = !chkDeleteAll.Enabled;
             cmbdeleteTime.Enabled = !cmbdeleteTime.Enabled;
             cmbPeriod.Enabled = !cmbPeriod.Enabled;
 
@@ -329,6 +330,16 @@ namespace DivarAdManagment
         private void dataGridViewTokens_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        private void chkDeleteAll_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkDeleteAll.Checked) deletType += 4;
+            else
+                deletType -= 4;
+
+            chkDeleteRegister.Enabled = !chkDeleteRegister.Enabled;
+            chkDeleteQueue.Enabled = !chkDeleteQueue.Enabled;
         }
     }
 
