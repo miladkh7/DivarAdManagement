@@ -39,11 +39,17 @@ namespace DivarAdManagment
         public void FillTimes()
         {
             cmbPeriod.Items.Add(new TimeInterval("فوری", 0));
-            cmbPeriod.Items.Add(new TimeInterval("هر 1 دقیقه", 1));
-            cmbPeriod.Items.Add(new TimeInterval("هر 5 دقیقه", 5));
-            cmbPeriod.Items.Add(new TimeInterval("هر 20 دقیقه", 20));
-            cmbPeriod.Items.Add(new TimeInterval("هر 40 دقیقه", 40));
-            cmbPeriod.Items.Add(new TimeInterval("هر یک ساعت", 60));
+            cmbPeriod.Items.Add(new TimeInterval("هر 10 ثانیه", 1));
+            cmbPeriod.Items.Add(new TimeInterval("هر 20 ثانیه", 2));
+            cmbPeriod.Items.Add(new TimeInterval("هر 30 ثانیه", 3));
+            cmbPeriod.Items.Add(new TimeInterval("هر 40 ثانیه", 4));
+            cmbPeriod.Items.Add(new TimeInterval("هر 50 ثانیه", 5));
+
+            cmbPeriod.Items.Add(new TimeInterval("هر 1 دقیقه", 6));
+            cmbPeriod.Items.Add(new TimeInterval("هر 5 دقیقه", 30));
+            cmbPeriod.Items.Add(new TimeInterval("هر 20 دقیقه", 120));
+            cmbPeriod.Items.Add(new TimeInterval("هر 40 دقیقه", 240));
+            cmbPeriod.Items.Add(new TimeInterval("هر یک ساعت", 360));
 
             cmbPeriod.Text = cmbPeriod.Items[0].ToString();
         }
@@ -285,7 +291,7 @@ namespace DivarAdManagment
         private void cmbPeriod_SelectedIndexChanged(object sender, EventArgs e)
         {
             var currentItem = (TimeInterval)cmbPeriod.SelectedItem;
-            DelayTime = 1000*60*currentItem.Value;
+            DelayTime = 1000*10*currentItem.Value;
 
 
         }
